@@ -82,7 +82,7 @@ function calculateExpiry(date) {
 function createChallengeLinkElement(data, parent) {
 
 	var expires = document.createElement('span');
-	expires.textContent = "Suffering ends in " + calculateExpiry(new Date(data.expires)) + " minutes.";
+	expires.textContent = "La souffrance se termine dans " + calculateExpiry(new Date(data.expires)) + " minutes.";
 
 	parent.append(expires); 
 	parent.append(document.createElement('br'));
@@ -125,7 +125,7 @@ function view_container_info(challenge_id) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status == "Suffering hasn't begun") {
+        if (data.status == "Pas d'instance lancée") {
             alert.append(data.status);
             toggleChallengeCreate();
         } else if (data.status == "already_running") {
