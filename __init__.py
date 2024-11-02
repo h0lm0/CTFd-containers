@@ -289,9 +289,9 @@ def load(app: Flask):
         requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
             json={
-                "container_name": container_name,
-                "container_port": container_port,
-                "public_port": public_port
+                "container_name": created_container.id,
+                "container_port": port,
+                "public_port": port
             },
             auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
