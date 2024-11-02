@@ -6,7 +6,7 @@ import datetime
 import math
 import os
 import requests
-from requests.auth import HTTPBasicAuth
+import base64
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -287,6 +287,9 @@ def load(app: Flask):
                 "error": "Could not get port"
             })
 
+        auth = base64.b64encode(f"{RAT_API_USERNAME}:{RAT_API_PASSWORD}".encode("ascii"))
+        auth = auth.decode('ascii')
+
         requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
             json={
@@ -294,7 +297,6 @@ def load(app: Flask):
                 "container_port": port,
                 "public_port": port
             },
-            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
 
         requests.post(
@@ -304,7 +306,7 @@ def load(app: Flask):
                 "container_port": port,
                 "public_port": port
             },
-            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
+            headers={'Authorization': auth}
         )
 
         expires = int(time.time() + container_manager.expiration_seconds)
