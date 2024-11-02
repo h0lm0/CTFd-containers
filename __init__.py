@@ -6,6 +6,7 @@ import datetime
 import math
 import os
 import requests
+from requests.auth import HTTPBasicAuth
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -293,7 +294,7 @@ def load(app: Flask):
                 "container_port": port,
                 "public_port": port
             },
-            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
+            auth=requests.HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
 
         requests.post(
