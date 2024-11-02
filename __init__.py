@@ -294,7 +294,7 @@ def load(app: Flask):
                 "container_port": port,
                 "public_port": port
             },
-            auth=requests.HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
+            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
 
         requests.post(
