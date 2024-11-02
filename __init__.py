@@ -4,6 +4,7 @@ import time
 import json
 import datetime
 import math
+import os
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -26,7 +27,12 @@ settings = json.load(open(get_settings_path()))
 
 USERS_MODE = settings["modes"]["USERS_MODE"]
 TEAMS_MODE = settings["modes"]["TEAMS_MODE"]
-
+RAT_API_USERNAME = os.getenv('RAT_API_USERNAME')
+RAT_API_PASSWORD = os.getenv('RAT_API_USERNAME')
+RAT_API1_HOST = os.getenv('RAT_API1_HOST')
+RAT_API1_PORT = os.getenv('RAT_API1_PORT')
+RAT_API2_HOST = os.getenv('RAT_API2_HOST')
+RAT_API2_PORT = os.getenv('RAT_API2_PORT')
 
 class ContainerChallenge(BaseChallenge):
     id = settings["plugin-info"]["id"]  # Unique identifier used to register challenges
@@ -278,6 +284,26 @@ def load(app: Flask):
                 "status": "error",
                 "error": "Could not get port"
             })
+
+        requests.post(
+            f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
+            json={
+                "container_name": container_name,
+                "container_port": container_port,
+                "public_port": public_port
+            },
+            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
+        )
+
+        requests.post(
+            f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/start_tunnel",
+            json={
+                "container_name": container_name,
+                "container_port": container_port,
+                "public_port": public_port
+            },
+            auth=HTTPBasicAuth(RAT_API_USERNAME, RAT_API_PASSWORD)
+        )
 
         expires = int(time.time() + container_manager.expiration_seconds)
 
