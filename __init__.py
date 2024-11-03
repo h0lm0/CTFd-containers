@@ -307,9 +307,6 @@ def load(app: Flask):
             auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
         
-        print(f"API USERNAME: {RAT_API_USERNAME}" )
-        print(f"API PASSWORD: {RAT_API_PASSWORD}" )
-        
         expires = int(time.time() + container_manager.expiration_seconds)
 
         # Insert the new container into the database
