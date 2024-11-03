@@ -290,16 +290,18 @@ def load(app: Flask):
         auth = base64.b64encode(f"{RAT_API_USERNAME}:{RAT_API_PASSWORD}".encode("ascii"))
         auth = auth.decode('ascii')
 
-        requests.post(
+        resp1 = requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
             json={
                 "container_name": created_container.id,
                 "container_port": port,
                 "public_port": port
             },
+            headers={'Authorization': auth}
         )
+        print(resp1.text)
 
-        requests.post(
+        resp2 = requests.post(
             f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/start_tunnel",
             json={
                 "container_name": created_container.id,
@@ -308,7 +310,7 @@ def load(app: Flask):
             },
             headers={'Authorization': auth}
         )
-
+        print(resp2.text)
         expires = int(time.time() + container_manager.expiration_seconds)
 
         # Insert the new container into the database
