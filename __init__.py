@@ -189,9 +189,7 @@ def load(app: Flask):
         requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/stop_tunnel",
             json={
-                "container_id": f"ctfd-{container_id}",
-                "container_port": port,
-                "public_port": port
+                "container_id": f"ctfd-{container_id}"
             },
             auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
@@ -199,9 +197,7 @@ def load(app: Flask):
         requests.post(
             f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/stop_tunnel",
             json={
-                "container_id": f"ctfd-{container_id}",
-                "container_port": port,
-                "public_port": port
+                "container_id": f"ctfd-{container_id}"
             },
             auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
