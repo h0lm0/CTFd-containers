@@ -7,7 +7,6 @@ import math
 import os
 import requests
 import base64
-import logging
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -307,11 +306,9 @@ def load(app: Flask):
             },
             auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
-
-        logging.basicConfig(filename="auth_debug.log", level=logging.INFO)
-
-        logging.info(f"Username: {RAT_API_USERNAME}")
-        logging.info(f"Password: {RAT_API_PASSWORD}")
+        
+        print(f"API USERNAME: {RAT_API_USERNAME}" )
+        print(f"API PASSWORD: {RAT_API_PASSWORD}" )
         
         expires = int(time.time() + container_manager.expiration_seconds)
 
