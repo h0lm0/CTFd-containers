@@ -186,6 +186,26 @@ def load(app: Flask):
         except ContainerException:
             return {"error": "Docker is not initialized. Please check your settings."}
 
+        requests.post(
+            f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/stop_tunnel",
+            json={
+                "container_name": f"ctfd-{container_id}",
+                "container_port": port,
+                "public_port": port
+            },
+            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
+        )
+
+        requests.post(
+            f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/stop_tunnel",
+            json={
+                "container_name": f"ctfd-{container_id}",
+                "container_port": port,
+                "public_port": port
+            },
+            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
+        )
+
         db.session.delete(container)
 
         db.session.commit()
@@ -290,7 +310,7 @@ def load(app: Flask):
         requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
             json={
-                "container_name": created_container.id,
+                "container_name": f"ctfd-{created_container.id}",
                 "container_port": port,
                 "public_port": port
             },
@@ -300,7 +320,7 @@ def load(app: Flask):
         requests.post(
             f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/start_tunnel",
             json={
-                "container_name": created_container.id,
+                "container_name": f"ctfd-{created_container.id}",
                 "container_port": port,
                 "public_port": port
             },
