@@ -7,6 +7,7 @@ import math
 import os
 import requests
 import base64
+import logging
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -287,9 +288,6 @@ def load(app: Flask):
                 "error": "Could not get port"
             })
 
-        auth = base64.b64encode(f"{RAT_API_USERNAME}:{RAT_API_PASSWORD}".encode("ascii"))
-        auth = auth.decode('ascii')
-
         requests.post(
             f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
             json={
@@ -310,6 +308,11 @@ def load(app: Flask):
             auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
         )
 
+        logging.basicConfig(filename="auth_debug.log", level=logging.INFO)
+
+        logging.info(f"Username: {RAT_API_USERNAME}")
+        logging.info(f"Password: {RAT_API_PASSWORD}")
+        
         expires = int(time.time() + container_manager.expiration_seconds)
 
         # Insert the new container into the database
