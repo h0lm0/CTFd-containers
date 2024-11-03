@@ -89,7 +89,7 @@ function createChallengeLinkElement(data, parent) {
 
 	if (data.connect == "tcp") {
 		let codeElement = document.createElement('code');
-		codeElement.textContent = 'nc ' + data.hostname + " " + data.port;
+		codeElement.textContent = 'nc -4' + data.hostname + " " + data.port;
 		parent.append(codeElement);
     } else if(data.connect == "ssh") {
         let codeElement = document.createElement('code');
@@ -243,7 +243,7 @@ function container_stop(challenge_id) {
             toggleChallengeCreate();
         } else {
             // Success
-            alert.append("You have suffered enough.");
+            alert.append("Instance arrêtée");
             toggleChallengeCreate();
             toggleChallengeUpdate();
         }
