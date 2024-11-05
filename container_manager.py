@@ -10,10 +10,10 @@ import paramiko.ssh_exception
 import requests
 import socket
 import random
-import rathole
 
 from CTFd.models import db
 from .models import ContainerInfoModel
+from .rathole import stop_tunnel
 
 """ To those who will just copy instead of forking, atleast give credits to the author and change your commit messages ;) """
 class ContainerException(Exception):
@@ -147,7 +147,7 @@ class ContainerManager:
                         print(
                             "[Container Expiry Job] Docker is not initialized. Please check your settings.")
 
-                    rathole.stop_tunnel(container.container_id)
+                    stop_tunnel(container.container_id)
                     db.session.delete(container)
                     db.session.commit()
 

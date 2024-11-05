@@ -7,7 +7,6 @@ import math
 import os
 import requests
 import base64
-import rathole
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -19,6 +18,7 @@ from CTFd.utils.user import get_current_user
 from CTFd.utils.modes import get_model
 from CTFd.utils import get_config
 
+from .rathole import start_tunnel, stop_tunnel
 from .models import ContainerChallengeModel, ContainerInfoModel, ContainerSettingsModel
 from .container_manager import ContainerManager, ContainerException
 
@@ -188,7 +188,7 @@ def load(app: Flask):
         except ContainerException:
             return {"error": "Docker is not initialized. Please check your settings."}
 
-        rathole.stop_tunnel(container_id)
+        stop_tunnel(container_id)
 
         db.session.delete(container)
 
@@ -291,7 +291,7 @@ def load(app: Flask):
                 "error": "Could not get port"
             })
 
-        rathole.start_tunnel(created_container.id, port)
+        start_tunnel(created_container.id, port)
         expires = int(time.time() + container_manager.expiration_seconds)
 
         # Insert the new container into the database
