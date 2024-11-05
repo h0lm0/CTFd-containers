@@ -7,6 +7,7 @@ import math
 import os
 import requests
 import base64
+import rathole
 
 from flask import Blueprint, request, Flask, render_template, url_for, redirect, flash
 
@@ -29,6 +30,7 @@ settings = json.load(open(get_settings_path()))
 
 USERS_MODE = settings["modes"]["USERS_MODE"]
 TEAMS_MODE = settings["modes"]["TEAMS_MODE"]
+
 RAT_API_USERNAME = os.getenv('RAT_API_USERNAME')
 RAT_API_PASSWORD = os.getenv('RAT_API_PASSWORD')
 RAT_API1_HOST = os.getenv('RAT_API1_HOST')
@@ -186,21 +188,7 @@ def load(app: Flask):
         except ContainerException:
             return {"error": "Docker is not initialized. Please check your settings."}
 
-        requests.post(
-            f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/stop_tunnel",
-            json={
-                "container_id": f"ctfd-{container_id}"
-            },
-            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
-        )
-
-        requests.post(
-            f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/stop_tunnel",
-            json={
-                "container_id": f"ctfd-{container_id}"
-            },
-            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
-        )
+        rathole.stop_tunnel(container_id)
 
         db.session.delete(container)
 
@@ -303,26 +291,7 @@ def load(app: Flask):
                 "error": "Could not get port"
             })
 
-        requests.post(
-            f"http://{RAT_API1_HOST}:{RAT_API1_PORT}/start_tunnel",
-            json={
-                "container_id": f"ctfd-{created_container.id}",
-                "container_port": port,
-                "public_port": port
-            },
-            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
-        )
-
-        requests.post(
-            f"http://{RAT_API2_HOST}:{RAT_API2_PORT}/start_tunnel",
-            json={
-                "container_id": f"ctfd-{created_container.id}",
-                "container_port": port,
-                "public_port": port
-            },
-            auth=(RAT_API_USERNAME, RAT_API_PASSWORD)
-        )
-        
+        rathole.start_tunnel(created_container.id, port)
         expires = int(time.time() + container_manager.expiration_seconds)
 
         # Insert the new container into the database
